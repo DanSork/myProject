@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: be-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: be-app
+  template:
+    metadata:
+      labels:
+        app: be-app
+    spec:
+      containers:
+      - name: be-container
+        image: dansork/docker-backend-service:latest
+        env:
+        - name: MYSQL_HOST
+          value: "mysql-service"
+        - name: MYSQL_DATABASE
+          value: "sql-db"
+        - name: MYSQL_PORT
+          value: "3306"
+        - name: MYSQL_PASSWORD
+          value: "123456"
+        - name: MYSQL_USER
+          value: "root"
+        resources:  
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:               
+            memory: "256Mi"     
+            cpu: "500m"         
+        ports:                  
+          - containerPort: 5001 
+

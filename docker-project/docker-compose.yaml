@@ -1,0 +1,55 @@
+services:
+  web:
+    build:
+      context: ./fe
+    ports:
+      - "5002:5002"
+    depends_on:
+      - backend-service
+    networks:
+      - exercise-network
+
+  backend-service:
+    build:
+      context: ./be
+    ports:
+      - "5001:5001"
+    depends_on:
+      - mysqldb
+
+    environment:
+      MYSQL_HOST: mysqldb
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 123456
+      MYSQL_NAME: crypto_db
+
+    networks:
+      - exercise-network
+
+
+  mysqldb:
+      image: mysql:5.7
+
+      environment:
+        MYSQL_ROOT_PASSWORD: 123456
+        MYSQL_DATABASE: crypto_db
+
+      networks:
+      - exercise-network
+
+networks:
+  exercise-network:
+
+
+
+# SIDE COMMENT :
+# had to debug why i couldnt connect to the backend with docker compose logs backend-service
+# found out that inside be/src/main.py the sql host is hardcoded and i had to match it so the backend can connect properly MYSQL_HOST = 
+# yes i used AI to debug because i didn't understand why i couldnt connect to the sqldb, had to solve it.
+
+
+#  [CHANGE-LOG:] 
+# added custom network to communicate between services
+# added custom environments for backend connection.
+# added a depedency for front/back so it can create itself after the db is up.
