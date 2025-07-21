@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "myapp.fullname" . }}-backend
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "myapp.name" . }}-backend
+  template:
+    metadata:
+      labels:
+        app: {{ include "myapp.name" . }}-backend
+    spec:
+      containers:
+      - name: be-container
+        image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+        ports:
+          - containerPort: {{ .Values.backend.containerPort }}
+        env:
+        - name: MYSQL_HOST
+          value: "{{ include "myapp.fullname" . }}-sql"
+        - name: MYSQL_DATABASE
+          value: "{{ .Values.backend.env.MYSQL_DATABASE }}"
+        - name: MYSQL_PORT
+          value: "{{ .Values.backend.env.MYSQL_PORT }}"
+        - name: MYSQL_PASSWORD
+          value: "{{ .Values.backend.env.MYSQL_PASSWORD}}"
+        - name: MYSQL_USER
+          value: "{{ .Values.backend.env.MYSQL_USER }}"
+        resources:  
+          requests:
+            memory: "{{ .Values.backend.resources.requests.memory }}"
+            cpu: "{{ .Values.backend.resources.requests.cpu }}"
+          limits:               
+            memory: "{{ .Values.backend.resources.limits.memory }}"     
+            cpu: "{{ .Values.backend.resources.limits.cpu }}"         
+
+

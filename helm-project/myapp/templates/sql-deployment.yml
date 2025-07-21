@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "myapp.fullname" . }}-sql
+  labels:
+    app: {{ include "myapp.name" . }}-sql
+spec:
+  replicas: {{ .Values.sql.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "myapp.name" . }}-sql
+  template:
+    metadata:
+      labels:
+        app: {{ include "myapp.name" . }}-sql
+    spec:
+      containers:
+        - name: sql-container
+          image: "{{ .Values.sql.image.repository }}:{{ .Values.sql.image.tag }}"
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "{{ .Values.sql.env.MYSQL_ROOT_PASSWORD }}"
+            - name: MYSQL_DATABASE
+              value: "{{ .Values.sql.env.MYSQL_DATABASE }}"
+          resources:
+            requests:
+              memory: "{{ .Values.sql.resources.requests.memory }}"
+              cpu: "{{ .Values.sql.resources.requests.cpu }}"
+            limits:
+              memory: "{{ .Values.sql.resources.limits.memory }}"
+              cpu: "{{ .Values.sql.resources.limits.cpu }}"
+          ports:
+            - containerPort: {{ .Values.sql.containerPort }}

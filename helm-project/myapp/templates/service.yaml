@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "myapp.fullname" . }}-sql
+  labels:
+    app: {{ include "myapp.name" . }}-sql
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ include "myapp.name" . }}-sql
+  ports:
+    - port: 3306
+      targetPort: {{ .Values.sql.containerPort }}

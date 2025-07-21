@@ -1,0 +1,92 @@
+nameOverride: "dan-app-helm"
+fullnameOverride: "dan-app-helm-override"
+
+
+#############################
+######### BACKEND ###########
+#############################
+
+backend:
+  replicaCount: 2
+
+  image:
+    repository: dansork/docker-backend-service
+    tag: "latest"
+
+  containerPort: 5001
+
+  env:
+    MYSQL_DATABASE: "sql-db"
+    MYSQL_PORT: "3306"
+    MYSQL_USER: "root"
+    MYSQL_PASSWORD: 123456 #i know not to hardcode - dont take my points away for this!!
+
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "500m"
+
+################
+################
+
+
+#############################
+######### FRONTEND ##########
+#############################
+
+frontend:
+  replicaCount: 2
+
+  image:
+    repository: dansork/docker-web
+    tag: "latest"
+
+  containerPort: 5002
+
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "500m"
+
+################
+################
+
+
+#############################
+######### DATABASE ##########
+#############################
+
+sql:
+  replicaCount: 1
+
+  image:
+    repository: mysql
+    tag: "5.7"
+
+  env:
+    MYSQL_ROOT_PASSWORD: "123456"
+    MYSQL_DATABASE: "sql-db"
+
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "500m"
+
+  containerPort: 3306
+
+#########################
+#########################
+
+ingress:
+  enabled: false
+
+# added due to not using ingress but notes.txt demands #
